@@ -1,15 +1,15 @@
 vim-textobj-rubysymbol
 ======================
 
-Text object for manipulate ruby _symbol_ variables.
-Depends on [textobj-user plugin][] by [Kana][].
+Text object for manipulate ruby _symbol_ variables.  
+Depends on [textobj-user plugin][textobj-user] by [Kana][].
 
 Usage
 =====
 
 With default key mappings, use `das` to *delete a symbol*, eg. `:example`.
 
-Use `dis` to *delete inner symbol*, which is, the `example` part without colon.
+`dis` to *delete inner symbol*, which is the `example` part without colon.
 
 Status
 ======
@@ -23,8 +23,8 @@ TODO
 
 Requirements
 ============
-[textobj-user plugin][] by [Kana][].
+[textobj-user plugin][textobj-user] by [Kana][].
 
 
 [Kana]: http://whileimautomaton.net/
-[textobj-user-plugin]: https://github.com/kana/vim-textobj-user
+[textobj-user]: https://github.com/kana/vim-textobj-user
