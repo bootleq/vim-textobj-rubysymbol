@@ -10,7 +10,7 @@ endfunction
 
 
 " script wise variables   {{{
-let s:iskeyword = "@,48-57,192-255"
+let s:iskeyword = "@,48-57,_,192-255"
 let s:symbol_pattern = join([
       \   ':\v((',
       \     '(\@{1,2}|\$+)\k+)',

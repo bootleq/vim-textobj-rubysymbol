@@ -1,7 +1,7 @@
 vim-textobj-rubysymbol
 ======================
 
-Text object for manipulate ruby _symbol_ variables.  
+Text object for manipulating ruby _symbol_ variables.  
 Depends on [textobj-user plugin][textobj-user] by [Kana][].
 
 Usage
