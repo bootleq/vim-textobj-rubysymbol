@@ -6,8 +6,8 @@ endif
 " Interface {{{
 call textobj#user#plugin('rubysymbol', {
       \   '-': {
-      \     'select-a': 'as', '*select-a-function*': 'textobj#rubysymbol#select_a',
-      \     'select-i': 'is', '*select-i-function*': 'textobj#rubysymbol#select_i',
+      \     'select-a': 'a:', '*select-a-function*': 'textobj#rubysymbol#select_a',
+      \     'select-i': 'i:', '*select-i-function*': 'textobj#rubysymbol#select_i',
       \   }
       \ })
 " }}} Interface

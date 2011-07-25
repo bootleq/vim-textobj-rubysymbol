@@ -7,9 +7,9 @@ Depends on [textobj-user plugin][textobj-user] by [Kana][].
 Usage
 =====
 
-With default key mappings, use `das` to *delete a symbol*, eg. `:example`.
+With default key mappings, use `da:` to *delete a symbol(:)*, eg. `:example`.
 
-`dis` to *delete inner symbol*, which is the `example` part without colon.
+`di:` to *delete inner symbol*, which is the `example` part without colon.
 
 Status
 ======
