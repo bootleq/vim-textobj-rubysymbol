@@ -22,3 +22,6 @@
 "   :@@@foo
 "   ::foo
 "   :foo#bar
+"
+" Reference:
+" http://phrogz.net/ProgrammingRuby/language.html#operatorexpressions
