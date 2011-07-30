@@ -44,8 +44,9 @@
 "
 "       GLOBAL
 "         :$foo_Bar
-"         :$f (TODO implement)
-"         :$-f (TODO implement)
+"         :$f
+"         :$-^
+"         :$-f
 "       @IDENTIFIER
 "        :@foo
 "       IDENTIFIER
@@ -65,9 +66,11 @@
 "
 " It Should not select:
 "
-"   :4oobar (TODO implement)
+"   :4oobar
 "   (:foobar)
 "   :@@@foo
+"   :@@-oo
+"   :@@foo
 "   ::foo (TODO implement)
 "   :foo#bar
 "   :!=

@@ -10,12 +10,13 @@ endfunction
 
 
 " script wise variables   {{{
-let s:iskeyword = "@,48-57,_,192-255"
 let s:simple_symbol_pattern = join([
       \   ':\v((',
-      \     '(\@{1,2}|\$+)\k+)',
+      \     '(\@{1,2}|\$+)[a-zA-Z_][a-zA-Z0-9_]*)',
       \     '|',
-      \     '\k+[?!=]?',
+      \     '[a-zA-Z_][a-zA-Z0-9_]*[?!=]?',
+      \     '|',
+      \     '\$\-?.',
       \   ')'
       \ ], '')
 
@@ -27,7 +28,7 @@ let s:opener_types = [
       \   s:QUOTED,
       \ ]
 let s:opener_pattern = '\v(' . join(s:opener_types, ')|(') . ')'
-let s:FNAME_PATTERN = ':\v(' . join([
+let s:FNAME_PATTERN = ':\v%(%(' . join([
       \   '\.{2}',
       \   '[|^&]',
       \   '\<\=\>',
@@ -40,7 +41,7 @@ let s:FNAME_PATTERN = ':\v(' . join([
       \   '[+\-\*/%]',
       \   '\~',
       \   '\[\]\=?',
-      \ ], ')|%(') . ')'
+      \ ], ')|%(') . '))'
 
 let s:SYMBOL_NOT_FOUND = 1
 let s:NOT_IMPLEMENTED = 2
@@ -57,8 +58,6 @@ let s:messages = {
 function! s:select(inner)
 
   let s:fail = 0
-  let save_isk = &l:iskeyword
-  let &l:iskeyword = s:iskeyword
   let cursor = {
         \   "line" : line('.'),
         \   "col" : col('.'),
@@ -99,8 +98,6 @@ function! s:select(inner)
   else
     let s:fail = s:SYMBOL_NOT_FOUND
   endif
-
-  let &l:iskeyword = save_isk
 
   if s:fail
     redraw
