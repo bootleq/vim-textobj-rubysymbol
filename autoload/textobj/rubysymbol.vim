@@ -11,7 +11,7 @@ endfunction
 
 " script wise variables   {{{
 let s:iskeyword = "@,48-57,_,192-255"
-let s:symbol_pattern = join([
+let s:simple_symbol_pattern = join([
       \   ':\v((',
       \     '(\@{1,2}|\$+)\k+)',
       \     '|',
@@ -27,6 +27,20 @@ let s:opener_types = [
       \   s:QUOTED,
       \ ]
 let s:opener_pattern = '\v(' . join(s:opener_types, ')|(') . ')'
+let s:FNAME_PATTERN = ':\v(' . join([
+      \   '\.{2}',
+      \   '[|^&]',
+      \   '\<\=\>',
+      \   '\={2,3}',
+      \   '\=\~',
+      \   '\>[\>\=]?',
+      \   '\<[\<\=]?',
+      \   '[+\-]\@',
+      \   '\*\*',
+      \   '[+\-\*/%]',
+      \   '\~',
+      \   '\[\]\=?',
+      \ ], ')|%(') . ')'
 
 let s:SYMBOL_NOT_FOUND = 1
 let s:NOT_IMPLEMENTED = 2
@@ -69,14 +83,16 @@ function! s:select(inner)
       s:fail = s:SYMBOL_NOT_FOUND
     else
       let ending["line"] = cursor["line"]
-      let ending["col"] = matchend(getline(cursor["line"]), s:symbol_pattern, opener["col"] - 1)
-      if ending["col"] < 0 || ending["col"] < cursor["col"]
+      let ending["col"] = matchend(getline(cursor["line"]), s:simple_symbol_pattern, opener["col"] - 1)
+
+      if ending["col"] < 0
+        let ending["col"] = matchend(getline(cursor["line"]), s:FNAME_PATTERN, opener["col"] - 1)
+      endif
+
+      if ending["col"] < cursor["col"]
         let s:fail = s:SYMBOL_NOT_FOUND
       endif
     endif
-  elseif opener["type"] == index(s:opener_types, s:QUOTED)
-    " TODO implement this
-    let s:fail = s:NOT_IMPLEMENTED
   elseif opener["type"] == index(s:opener_types, s:QUOTED)
     " TODO implement this
     let s:fail = s:NOT_IMPLEMENTED
