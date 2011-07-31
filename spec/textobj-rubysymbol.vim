@@ -83,7 +83,12 @@
 "   :文foo字
 "   :@@@foo
 "   :@@-oo
-"   ::foo (TODO implement)
+"   \:foo
+"   ]:foo
+"   }:foo
+"   ":foo
+"   ':foo
+"   ::foo
 "   :foo#bar
 "   :!=
 "   :!~

@@ -20,8 +20,8 @@ let s:literal_symbol_pattern = join([
       \   ')'
       \ ], '')
 
-let s:LITERAL = ':[^"'']'
-let s:QUOTED = ':["'']'
+let s:LITERAL = '\m[\]})\"'':]\@<!\v:[^"'':]'
+let s:QUOTED  = '\m[\]})\"'':]\@<!\v:["'']'
 
 let s:opener_types = [
       \   s:LITERAL,
