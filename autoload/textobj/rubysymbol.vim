@@ -10,26 +10,25 @@ endfunction
 
 
 " script wise variables   {{{
-let s:simple_symbol_pattern = join([
+let s:literal_symbol_pattern = join([
       \   ':\v((',
-      \     '(\@{1,2}|\$+)[a-zA-Z_][a-zA-Z0-9_]*)',
+      \     '(\@{1,2}|\$+)\h\w*)',
       \     '|',
-      \     '[a-zA-Z_][a-zA-Z0-9_]*[?!=]?',
+      \     '\h\w*[?!=]?',
       \     '|',
       \     '\$\-?.',
       \   ')'
       \ ], '')
 
-let s:SIMPLE = ':[^"'']'
+let s:LITERAL = ':[^"'']'
 let s:QUOTED = ':["'']'
 
 let s:opener_types = [
-      \   s:SIMPLE,
+      \   s:LITERAL,
       \   s:QUOTED,
       \ ]
 let s:opener_pattern = '\v(' . join(s:opener_types, ')|(') . ')'
-let s:FNAME_PATTERN = ':\v%(%(' . join([
-      \   '\.{2}',
+let s:FNAME_PATTERN = ':\v%(' . join([
       \   '[|^&]',
       \   '\<\=\>',
       \   '\={2,3}',
@@ -40,8 +39,9 @@ let s:FNAME_PATTERN = ':\v%(%(' . join([
       \   '\*\*',
       \   '[+\-\*/%]',
       \   '\~',
+      \   '`',
       \   '\[\]\=?',
-      \ ], ')|%(') . '))'
+      \ ], '|') . ')'
 
 let s:SYMBOL_NOT_FOUND = 1
 let s:NOT_IMPLEMENTED = 2
@@ -77,12 +77,12 @@ function! s:select(inner)
   let opener["type"] = submatch - 2
   unlet submatch
 
-  if opener["type"] == index(s:opener_types, s:SIMPLE)
+  if opener["type"] == index(s:opener_types, s:LITERAL)
     if opener["line"] != cursor["line"]
-      s:fail = s:SYMBOL_NOT_FOUND
+      let s:fail = s:SYMBOL_NOT_FOUND
     else
       let ending["line"] = cursor["line"]
-      let ending["col"] = matchend(getline(cursor["line"]), s:simple_symbol_pattern, opener["col"] - 1)
+      let ending["col"] = matchend(getline(cursor["line"]), s:literal_symbol_pattern, opener["col"] - 1)
 
       if ending["col"] < 0
         let ending["col"] = matchend(getline(cursor["line"]), s:FNAME_PATTERN, opener["col"] - 1)

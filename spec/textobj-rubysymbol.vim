@@ -1,7 +1,18 @@
 " TODO make this evaluable
 "
 " Reference:
-" http://web.njit.edu/all_topics/Prog_Lang_Docs/html/ruby/yacc.html
+" http://doc.ruby-lang.org/ja/1.9.2/doc/spec=2fliteral.html#symbol
+"
+"   : identifier
+"   : variable name
+"   : operator (which can be defined as method)
+"
+"   :'foo-bar' (TODO implement)
+"   :"foo-bar" (TODO implement)
+"   %s{foo-bar} (TODO implement)
+"
+" Reference:
+" http://doc.ruby-lang.org/ja/1.9.2/doc/spec=2fbnf.html
 "
 " It Should select
 "
@@ -9,35 +20,39 @@
 "
 "     FNAME
 "
-"       IDENTIFIER
-"        :foo
-"        :_foo
-"        :fooBAR_4
+"       OPERATION
+"         IDENTIFIER
+"          :foo
+"          :_foo
+"          :fooBAR_4
+"         IDENTIFIER! / IDENTIFIER?
+"          :foo_bar!
+"          :foo4aR?
 "       AND
-"        :..
 "        :|
 "        :^
 "        :&
-"        :<=> 
-"        :== 
-"        :=== 
+"        :<=>
+"        :==
+"        :===
 "        :=~
-"        :> 
-"        :>= 
-"        :< 
+"        :>
+"        :>=
+"        :<
 "        :<=
-"        :+ 
-"        :- 
-"        :* 
-"        :/ 
-"        :% 
+"        :+
+"        :-
+"        :*
+"        :/
+"        :%
 "        :**
-"        :<< 
-"        :>> 
+"        :<<
+"        :>>
 "        :~
-"        :+@ 
-"        :-@ 
-"        :[] 
+"        :`
+"        :+@
+"        :-@
+"        :[]
 "        :[]=
 "
 "     VARNAME
@@ -45,20 +60,16 @@
 "       GLOBAL
 "         :$foo_Bar
 "         :$f
-"         :$-^
-"         :$-f
+"         :$(
+"         :$-\
+"         :$-  (XXX the spec is `:$-any_char`, so we match `$- ` with space, too. Might make conflicts.)
 "       @IDENTIFIER
 "        :@foo
-"       IDENTIFIER
-"
-" 
-"     EXTRA (not in BNF?)
+"       @@IDENTIFIER
 "        :@@foo
-"        :foo?
-"        :foo!
+"
+"     EXTRA (not in BNF?)
 "        :foo=
-"        :許功蓋
-"        :自求foo多福
 "        :"foo bar" (TODO implement)
 "        :"every\nTHING" (TODO implement)
 "
@@ -68,9 +79,10 @@
 "
 "   :4oobar
 "   (:foobar)
+"   :許功蓋
+"   :文foo字
 "   :@@@foo
 "   :@@-oo
-"   :@@foo
 "   ::foo (TODO implement)
 "   :foo#bar
 "   :!=
