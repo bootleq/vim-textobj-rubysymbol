@@ -10,23 +10,38 @@ endfunction
 
 
 " script wise variables   {{{
-let s:iskeyword = "@,48-57,_,192-255"
-let s:symbol_pattern = join([
+let s:literal_symbol_pattern = join([
       \   ':\v((',
-      \     '(\@{1,2}|\$+)\k+)',
+      \     '(\@{1,2}|\$+)\h\w*)',
       \     '|',
-      \     '\k+[?!=]?',
+      \     '\h\w*[?!=]?',
+      \     '|',
+      \     '\$\-?.',
       \   ')'
       \ ], '')
 
-let s:SIMPLE = ':[^"'']'
-let s:QUOTED = ':["'']'
+let s:LITERAL = '\m[\]})\"'':]\@<!\v:[^"'':]'
+let s:QUOTED  = '\m[\]})\"'':]\@<!\v:["'']'
 
 let s:opener_types = [
-      \   s:SIMPLE,
+      \   s:LITERAL,
       \   s:QUOTED,
       \ ]
 let s:opener_pattern = '\v(' . join(s:opener_types, ')|(') . ')'
+let s:FNAME_PATTERN = ':\v%(' . join([
+      \   '[|^&]',
+      \   '\<\=\>',
+      \   '\={2,3}',
+      \   '\=\~',
+      \   '\>[\>\=]?',
+      \   '\<[\<\=]?',
+      \   '[+\-]\@',
+      \   '\*\*',
+      \   '[+\-\*/%]',
+      \   '\~',
+      \   '`',
+      \   '\[\]\=?',
+      \ ], '|') . ')'
 
 let s:SYMBOL_NOT_FOUND = 1
 let s:NOT_IMPLEMENTED = 2
@@ -43,8 +58,6 @@ let s:messages = {
 function! s:select(inner)
 
   let s:fail = 0
-  let save_isk = &l:iskeyword
-  let &l:iskeyword = s:iskeyword
   let cursor = {
         \   "line" : line('.'),
         \   "col" : col('.'),
@@ -64,27 +77,27 @@ function! s:select(inner)
   let opener["type"] = submatch - 2
   unlet submatch
 
-  if opener["type"] == index(s:opener_types, s:SIMPLE)
+  if opener["type"] == index(s:opener_types, s:LITERAL)
     if opener["line"] != cursor["line"]
-      s:fail = s:SYMBOL_NOT_FOUND
+      let s:fail = s:SYMBOL_NOT_FOUND
     else
       let ending["line"] = cursor["line"]
-      let ending["col"] = matchend(getline(cursor["line"]), s:symbol_pattern, opener["col"] - 1)
-      if ending["col"] < 0 || ending["col"] < cursor["col"]
+      let ending["col"] = matchend(getline(cursor["line"]), s:literal_symbol_pattern, opener["col"] - 1)
+
+      if ending["col"] < 0
+        let ending["col"] = matchend(getline(cursor["line"]), s:FNAME_PATTERN, opener["col"] - 1)
+      endif
+
+      if ending["col"] < cursor["col"]
         let s:fail = s:SYMBOL_NOT_FOUND
       endif
     endif
   elseif opener["type"] == index(s:opener_types, s:QUOTED)
     " TODO implement this
     let s:fail = s:NOT_IMPLEMENTED
-  elseif opener["type"] == index(s:opener_types, s:QUOTED)
-    " TODO implement this
-    let s:fail = s:NOT_IMPLEMENTED
   else
     let s:fail = s:SYMBOL_NOT_FOUND
   endif
-
-  let &l:iskeyword = save_isk
 
   if s:fail
     redraw
