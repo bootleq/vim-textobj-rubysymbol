@@ -1,0 +1,97 @@
+*textobj-rubysymbol.txt*        Text objects for ruby symbols
+
+Version:    0.0
+Author:     bootleq <bootleq@gmail.com>
+License:    public domain
+Repository: https://github.com/bootleq/vim-textobj-rubysymbol
+
+
+==============================================================================
+CONTENTS                                         *textobj-rubysymbol-contents*
+
+    Introduction ...................|textobj-rubysymbol-introduction|
+    Interface ......................|textobj-rubysymbol-interface|
+      Key Mapings ..................|textobj-rubysymbol-key-mappings|
+    Configuration ..................|textobj-rubysymbol-configuration|
+
+
+==============================================================================
+INTRODUCTION                                 *textobj-rubysymbol-introduction*
+
+*textobj-rubysymbol* provides text objects for manipulating ruby symbols.
+
+a:      "a ruby symbol", includes the beginning colon.
+        For example, below are 4 symbols in different forms: >
+          :foo?
+          :[]=
+          :"foo bar"
+          :"multi-line symbol
+              like this"
+<
+i:      "inner ruby symbol", same as `a:`, but does not include the colon.
+
+
+With default mappings, you can use:
+
+  `va:` to "select a ruby symbol",
+  `da:` to delete,
+  `ca:` to change,
+  `vi:` to select "inner".
+
+
+Requirements:
+
+- Vim 7.0 or later
+- |textobj-user| 0.3.5 or later (vimscript#2100)
+
+
+Limitations:
+
+No support for {Visual} and [count], see |textobj-user-bugs| for further
+information.
+
+
+==============================================================================
+INTERFACE                                       *textobj-rubysymbol-interface*
+
+------------------------------------------------------------------------------
+KEY MAPPINGS                                 *textobj-rubysymbol-key-mappings*
+
+<Plug>(textobj-rubysymbol-a)                    *<Plug>(textobj-rubysymbol-a)*
+        Select a ruby symbol.
+
+<Plug>(textobj-rubysymbol-i)                    *<Plug>(textobj-rubysymbol-i)*
+        Select a ruby symbol, excludes the beginning colon.
+
+
+==============================================================================
+CONFIGURATION                               *textobj-rubysymbol-configuration*
+
+                                 *g:textobj_rubysymbol_no_default_key_mappings*
+                                         *:TextobjRubysymbolDefaultKeyMappings*
+This plugin will define the following key mappings in Visual mode and
+Operator-pending mode automatically.
+
+        {lhs}   {rhs}
+        -----   ----------------------------~
+        a:      <Plug>(textobj-rubysymbol-a)
+        i:      <Plug>(textobj-rubysymbol-i)
+
+If you don't want these, define |g:textobj_rubysymbol_no_default_key_mappings|
+before this plugin is loaded (e.g. in your |vimrc|).
+
+You can also use |:TextobjRubysymbolDefaultKeyMappings| to redefine these
+mappings. This command doesn't override existing {lhs}s unless [!] is given.
+
+Example configuration to define your custom mappings: >
+
+        let g:textobj_rubysymbol_no_default_key_mappings = 1
+        xmap as <Plug>(textobj-rubysymbol-a)
+        omap as <Plug>(textobj-rubysymbol-a)
+        xmap is <Plug>(textobj-rubysymbol-i)
+        omap is <Plug>(textobj-rubysymbol-i)
+<
+
+
+==============================================================================
+vim:tw=78:fo=tcroq2mM:et:sts=2:sw=2:ft=help:norl:

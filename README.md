@@ -1,24 +1,29 @@
 vim-textobj-rubysymbol
 ======================
 
-Text object for manipulating ruby _symbol_ variables.  
+Text objects for manipulating ruby _symbol_ variables.  
 Depends on [textobj-user plugin][textobj-user] by [Kana][].
+
 
 Usage
 =====
 
-With default key mappings, use `da:` to *delete a symbol(:)*, eg. `:example`.
+With default key mappings, use `da:` to *delete a symbol(:)*, e.g. `:example`.
 
 `di:` to *delete inner symbol*, which is the `example` part without colon.
 
+Also `ci:`, `vi:` for change, select commands.
+
+
 Status
 ======
-Developing, experimental.
+Under Development, experimental.
+
 
 TODO
 ----
-- Support symbol with quotes, eg. `:"foo bar"`.
-- Add document.
+- Support more forms of symbol.
+- Test case.
 
 
 Requirements

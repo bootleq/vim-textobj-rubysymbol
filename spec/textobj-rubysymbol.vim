@@ -9,6 +9,7 @@
 "
 "   :'foo-bar'
 "   :"foo-bar"
+"   :"foo #{:nested}" (TODO implement)
 "   %s{foo-bar} (TODO implement)
 "
 " Reference:
