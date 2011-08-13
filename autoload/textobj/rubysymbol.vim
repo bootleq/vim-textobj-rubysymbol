@@ -54,11 +54,58 @@ let s:messages = {
 " }}} script wise variables
 
 
+" util functions {{{
+let s:functions = {}
+
+function s:functions.search_unescaped_in_line(line, char, start_col) dict
+  let stop_col = a:start_col
+  let line = getline(a:line)
+
+  while 1
+    let stop_col = matchend(line, a:char, stop_col)
+    if stop_col < 0
+      return 0
+    endif
+
+    let backslashes = matchstr(line, '\m\\*\ze\%' . stop_col . 'c')
+    if strlen(backslashes) % 2 == 0
+      return stop_col
+    endif
+  endwhile
+endfunction
+
+function s:functions.search_next_unescaped(char, opener) dict
+  call cursor(a:opener["line"], a:opener["col"])
+
+  " Take opener line as special case
+  let stop_col = s:functions.search_unescaped_in_line(a:opener["line"], a:char, a:opener["col"] + 1)
+  if stop_col != 0
+    return [line('.'), stop_col]
+  endif
+
+  let stop_at = {"line": a:opener["line"], "col": 0}
+  while 1
+    let stop_at["line"] = searchpos(printf('\m\%%>%dl%s', stop_at["line"], a:char), 'cnW')[0]
+
+    let stop_col =  s:functions.search_unescaped_in_line(stop_at["line"], a:char, 0)
+    if stop_col != 0
+      return [stop_at["line"], stop_col]
+    endif
+  endwhile
+endfunction
+
+" }}} util functions
+
+
 " main function {{{
 function! s:select(inner)
 
   let s:fail = 0
   let cursor = {
+        \   "line" : line('.'),
+        \   "col" : col('.'),
+        \ }
+  let save_cursor = {
         \   "line" : line('.'),
         \   "col" : col('.'),
         \ }
@@ -70,7 +117,6 @@ function! s:select(inner)
   let ending = {
         \   "line" : 0,
         \   "col" : 0,
-        \   "pattern" : 0,
         \ }
 
   let [opener["line"], opener["col"], submatch] = searchpos(s:opener_pattern, 'bcnpW')
@@ -88,13 +134,21 @@ function! s:select(inner)
         let ending["col"] = matchend(getline(cursor["line"]), s:FNAME_PATTERN, opener["col"] - 1)
       endif
 
-      if ending["col"] < cursor["col"]
+      if ending["col"] < save_cursor["col"]
         let s:fail = s:SYMBOL_NOT_FOUND
       endif
     endif
+
   elseif opener["type"] == index(s:opener_types, s:QUOTED)
-    " TODO implement this
-    let s:fail = s:NOT_IMPLEMENTED
+    let quote = getline(opener["line"])[opener["col"]]
+    let s:escape_detected = {"line" : 0, "count" : 0}
+
+    let [ending["line"], ending["col"]] = s:functions.search_next_unescaped(quote, opener)
+
+    if ending["line"] < save_cursor["line"] || (ending["line"] == save_cursor["line"] && ending["col"] < save_cursor["col"])
+      let s:fail = s:SYMBOL_NOT_FOUND
+    endif
+
   else
     let s:fail = s:SYMBOL_NOT_FOUND
   endif

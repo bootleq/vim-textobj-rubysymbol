@@ -7,8 +7,8 @@
 "   : variable name
 "   : operator (which can be defined as method)
 "
-"   :'foo-bar' (TODO implement)
-"   :"foo-bar" (TODO implement)
+"   :'foo-bar'
+"   :"foo-bar"
 "   %s{foo-bar} (TODO implement)
 "
 " Reference:
@@ -70,8 +70,19 @@
 "
 "     EXTRA (not in BNF?)
 "        :foo=
-"        :"foo bar" (TODO implement)
-"        :"every\nTHING" (TODO implement)
+"        :'foo bar'
+"        :'foo\ \\\'bar'
+"        :'foo
+"             \\\'bar'
+"        :'foo \\\'
+"             \\'bar' don't match here
+"        :"foo bar"
+"        :"foo \"\\\"foo"
+"
+"        :"foo  \"\\\\"foo"bar
+"        :"foo \\"\\\\"foo"
+"
+"        :"every\nTHING"
 "
 "
 "
