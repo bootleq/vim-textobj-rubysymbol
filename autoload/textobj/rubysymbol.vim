@@ -43,13 +43,20 @@ let s:FNAME_PATTERN = ':\v%(' . join([
       \   '\[\]\=?',
       \ ], '|') . ')'
 
+let s:timeout_length = has('reltime') ?
+      \ exists('g:textobj_rubysymbol_timeout_length') ? 
+      \   g:textobj_rubysymbol_timeout_length : &timeoutlen : 
+      \ 0
+
 let s:SYMBOL_NOT_FOUND = 1
 let s:NOT_IMPLEMENTED = 2
+let s:TIME_OUT = 3
 
 let s:fail = 0
 let s:messages = {
       \   s:SYMBOL_NOT_FOUND : "Can't find a symbol.",
       \   s:NOT_IMPLEMENTED : "This feature is not implement yet.",
+      \   s:TIME_OUT : "Can't find a symbol. (timeout)",
       \ }
 " }}} script wise variables
 
@@ -91,7 +98,22 @@ function s:functions.search_next_unescaped(char, opener) dict
     if stop_col != 0
       return [stop_at["line"], stop_col]
     endif
+
+    if s:functions.check_timeout()
+      return [0, 0]
+    endif
   endwhile
+endfunction
+
+function s:functions.check_timeout() dict
+  if ! has('reltime')
+    return 1
+  endif
+
+  if str2float(reltimestr(reltime(s:start_search_at, reltime()))) * 1000 > s:timeout_length
+    let s:fail = s:TIME_OUT
+    return 1
+  endif
 endfunction
 
 " }}} util functions
@@ -99,6 +121,8 @@ endfunction
 
 " main function {{{
 function! s:select(inner)
+
+  let s:start_search_at = has('reltime') ? reltime() : 0
 
   let s:fail = 0
   let cursor = {
@@ -146,7 +170,7 @@ function! s:select(inner)
     let [ending["line"], ending["col"]] = s:functions.search_next_unescaped(quote, opener)
 
     if ending["line"] < save_cursor["line"] || (ending["line"] == save_cursor["line"] && ending["col"] < save_cursor["col"])
-      let s:fail = s:SYMBOL_NOT_FOUND
+      let s:fail = s:fail ? s:fail : s:SYMBOL_NOT_FOUND
     endif
 
   else
